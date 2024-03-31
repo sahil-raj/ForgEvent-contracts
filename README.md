@@ -15,7 +15,7 @@ ForgEvent is a decentralized event management system leveraging blockchain techn
 ## Technologies
 
 - **Blockchain**: Ethereum or compatible platform.
-- **Frontend**: Svelte.js and Bootstrap.
+- **Frontend**: Svelte.js and tailwindcss.
 <!-- - **Storage**: Optional IPFS for decentralized media storage. -->
 - **Tooling**: Hardhat.
 
