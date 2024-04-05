@@ -1,7 +1,6 @@
 //contracts/ForgEvent.sol
-//SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: GPL-3.0-or-later
 
-// SPDX-License-Identifier: SEE LICENSE IN LICENSE
 pragma solidity ^0.8.4;
 
 contract ForgEvent {
@@ -28,7 +27,7 @@ contract ForgEvent {
         _;
     }
 
-    function createEvent(uint _eventName, uint _startTimestamp, uint _endTimestamp, uint _ticketCount, uint _ticketPrice, address[] _organizers, bool _active) checkForCreation(_startTimestamp, _endTimestamp, _ticketCount) public returns(bool) {
+    function createEvent(uint _eventName, uint _startTimestamp, uint _endTimestamp, uint _ticketCount, uint _ticketPrice, address[] memory _organizers, bool _active) checkForCreation(_startTimestamp, _endTimestamp, _ticketCount) public returns(bool) {
 
     }
 }
