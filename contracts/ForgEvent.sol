@@ -18,11 +18,17 @@ contract ForgEvent {
         bool active;
     }
 
-    modifier checkForCreation() {
+    modifier checkForCreation(uint _startTimestamp, uint _endTimestamp, uint _ticketCount) {
+        //event can't be in past
+        require(_startTimestamp >= block.timestamp && _endTimestamp >= block.timestamp, "Event must be in future");
+        //end time must be after start
+        require(_startTimestamp > _endTimestamp, "Cannot end event before starting");
+        //must atleast have 1 ticket
+        require(_ticketCount > 0, "Must have 1 ticket atleast");
         _;
     }
 
-    function createEvent(uint _eventName, uint _startTimestamp, uint _endTimestamp, uint _ticketCount, uint _ticketPrice, address[] _organizers, bool _active) checkForCreation public returns(bool) {
+    function createEvent(uint _eventName, uint _startTimestamp, uint _endTimestamp, uint _ticketCount, uint _ticketPrice, address[] _organizers, bool _active) checkForCreation(_startTimestamp, _endTimestamp, _ticketCount) public returns(bool) {
 
     }
 }
