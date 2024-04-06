@@ -38,12 +38,12 @@ contract ForgEvent {
         _;
     }
 
-    function createEvent(string memory _eventName, uint _startTimestamp, uint _endTimestamp, uint _ticketCount, uint _ticketPrice, address[] memory _organizers, bool _active, string memory _eventJsonData) checkForCreation(_eventName, _startTimestamp, _endTimestamp, _ticketCount) public returns(bytes32) {
+    function createEvent(string memory _eventName, uint[] memory _eventTimestamps, uint[] memory _ticketData, address[] memory _organizers, bool _active, string memory _eventJsonData) checkForCreation(_eventName, _eventTimestamps[0], _eventTimestamps[1], _ticketData[0]) public returns(bytes32) {
         //for creating unique id of each event
-        bytes32 uid = keccak256(abi.encode(block.timestamp, msg.sender, _eventName, _startTimestamp, _endTimestamp));
+        bytes32 uid = keccak256(abi.encode(block.timestamp, msg.sender, _eventName, _eventTimestamps[0], _eventTimestamps[1]));
 
         //obj of the Forg type to create an event
-        Forg memory e = Forg(_eventName, _startTimestamp, _endTimestamp, _ticketCount, _ticketPrice, msg.sender, _organizers, _active, _eventJsonData);
+        Forg memory e = Forg(_eventName, _eventTimestamps[0], _eventTimestamps[1], _ticketData[0], _ticketData[1], msg.sender, _organizers, _active, _eventJsonData);
 
         //map the uid to each event
         eventMapping[uid] = e;
