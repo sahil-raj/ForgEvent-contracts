@@ -3,7 +3,9 @@
 
 pragma solidity ^0.8.4;
 
-contract ForgEvent {
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract ForgEvent is Ownable(msg.sender) {
     constructor() {}
 
     //events
@@ -22,7 +24,11 @@ contract ForgEvent {
         string eventJsonData;//other data related to event
     }
 
+    //mapping to map event id to the event
     mapping(bytes32 => Forg) public forgMapping;
+
+    //mapping to map address to the event id and that too to the number of tickets bought
+    mapping(address => mapping(bytes32 => uint)) internal userTickets;
 
     uint256 private nonce = 0;
 
@@ -36,6 +42,19 @@ contract ForgEvent {
         require(_startTimestamp <= _endTimestamp, "Cannot end event before starting");
         //must atleast have 1 ticket
         require(_ticketCount > 0, "Must have 1 ticket atleast");
+        _;
+    }
+
+    modifier buyCheck(bytes32 _eventId, uint _ticketCount) {
+        //check if the event exists and is in the future
+        require(forgMapping[_eventId].start_timestamp > block.timestamp, "event not available");
+
+        //check if enough tickets are available
+        require(forgMapping[_eventId].ticket_count >= _ticketCount, "tickets not available");
+
+        //check if user have sent enough value for all the tickets
+        require(msg.value >= _ticketCount*forgMapping[_eventId].ticket_price, "insufficient value");
+
         _;
     }
 
@@ -58,5 +77,8 @@ contract ForgEvent {
         emit EventCreated(msg.sender, _eventName, uid);
 
         return uid;
+    }
+
+    function buyTickets(bytes32 _eventId, uint _ticketCount) buyCheck public payable returns(bool){
     }
 }
