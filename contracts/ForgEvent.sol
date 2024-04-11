@@ -8,7 +8,7 @@ contract ForgEvent {
 
     //events
     //event to emit when event is created
-    event EventCreated(address eventCreator, string eventName, uint eventId);
+    event EventCreated(address eventCreator, string eventName, bytes32 eventId);
 
     //structure of each event
     struct Forg {
@@ -19,11 +19,12 @@ contract ForgEvent {
         uint ticket_price;
         address creator;
         address[] organizers;
-        bool active;
         string eventJsonData;//other data related to event
     }
 
-    mapping(bytes32 => Forg) eventMapping;
+    mapping(bytes32 => Forg) public forgMapping;
+
+    uint256 private nonce = 0;
 
     //checks for createEvent function
     modifier checkForCreation(string memory _eventName, uint _startTimestamp, uint _endTimestamp, uint _ticketCount) {
@@ -32,21 +33,30 @@ contract ForgEvent {
         //event can't be in past
         require(_startTimestamp >= block.timestamp && _endTimestamp >= block.timestamp, "Event must be in future");
         //end time must be after start
-        require(_startTimestamp > _endTimestamp, "Cannot end event before starting");
+        require(_startTimestamp <= _endTimestamp, "Cannot end event before starting");
         //must atleast have 1 ticket
         require(_ticketCount > 0, "Must have 1 ticket atleast");
         _;
     }
 
-    function createEvent(string memory _eventName, uint[] memory _eventTimestamps, uint[] memory _ticketData, address[] memory _organizers, bool _active, string memory _eventJsonData) checkForCreation(_eventName, _eventTimestamps[0], _eventTimestamps[1], _ticketData[0]) public returns(bytes32) {
+    function createEvent(string memory _eventName, uint[] memory _eventTimestamps, uint[] memory _ticketData, address[] memory _organizers, string memory _eventJsonData) checkForCreation(_eventName, _eventTimestamps[0], _eventTimestamps[1], _ticketData[0]) public returns(bytes32) {
+
         //for creating unique id of each event
-        bytes32 uid = keccak256(abi.encode(block.timestamp, msg.sender, _eventName, _eventTimestamps[0], _eventTimestamps[1]));
+        //use nounce to remove conflicting behaviour
+        bytes32 uid = keccak256(abi.encode(block.timestamp, msg.sender, _eventName, _eventTimestamps[0], _eventTimestamps[1], nonce));
 
         //obj of the Forg type to create an event
-        Forg memory e = Forg(_eventName, _eventTimestamps[0], _eventTimestamps[1], _ticketData[0], _ticketData[1], msg.sender, _organizers, _active, _eventJsonData);
+        Forg memory e = Forg(_eventName, _eventTimestamps[0], _eventTimestamps[1], _ticketData[0], _ticketData[1], msg.sender, _organizers, _eventJsonData);
 
         //map the uid to each event
-        eventMapping[uid] = e;
+        forgMapping[uid] = e;
+
+        //increase nonce for uid
+        ++nonce;
+
+        //emit event that the forg is forged!!
+        emit EventCreated(msg.sender, _eventName, uid);
+
         return uid;
     }
 }
