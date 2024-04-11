@@ -84,7 +84,7 @@ contract ForgEvent is Ownable(msg.sender) {
 
     function buyTickets(bytes32 _eventId, uint _ticketCount) buyCheck(_eventId, _ticketCount) public payable returns(bool){
         //transfer funds to owner
-        (bool success, ) = owner().call{value: forgMapping[_eventId].ticket_price*_ticketCount}("");
+        (bool success, ) = forgMapping[_eventId].creator.call{value: forgMapping[_eventId].ticket_price*_ticketCount}("");
         //continue if the transfer was successful
         require(success, "transaction failed");
         //decrease the total available tickets
