@@ -70,6 +70,9 @@ contract ForgEvent is Ownable(msg.sender) {
         //map the uid to each event
         forgMapping[uid] = e;
 
+        //make creator a organizer
+        forgMapping[uid].organizers.push(msg.sender);
+
         //increase nonce for uid
         ++nonce;
 
@@ -79,6 +82,8 @@ contract ForgEvent is Ownable(msg.sender) {
         return uid;
     }
 
-    function buyTickets(bytes32 _eventId, uint _ticketCount) buyCheck public payable returns(bool){
+    function buyTickets(bytes32 _eventId, uint _ticketCount) buyCheck(_eventId, _ticketCount) public payable returns(bool){
     }
 }
+
+//[1718083510, 1723353910]
