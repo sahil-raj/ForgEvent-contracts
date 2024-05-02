@@ -141,30 +141,33 @@ describe("ForgEvent Tests", () => {
     describe("checks", async () => {
       it("Event must exsist and that too in future", async () => {
         const currTime = Date.now();
-
         const abiCoder = new ethers.AbiCoder();
+
+        await refContract.createEvent(
+          "test event",
+          [currTime + 1000, currTime + 10000],
+          [100, 1000],
+          [adds[1].address, adds[2].address],
+          "{testJson: true}"
+        );
         const calldata = abiCoder.encode(
           ["uint256", "address", "string", "uint256", "uint256", "uint256"],
           [
             (await ethers.provider.getBlock()).timestamp,
             adds[0].address,
-            "testEvent",
+            "test event",
             currTime + 1000,
             currTime + 10000,
             0,
           ]
         );
         const expUid = ethers.keccak256(calldata).toString();
-
-        refContract.createEvent(
-          "testEvent",
-          [currTime + 1000, currTime + 10000],
-          [100, 1000],
-          [adds[1].address, adds[2].address],
-          "{testJson: true}"
+        expect((await refContract.forgMapping(expUid))[0]).to.equal(
+          "test event"
         );
-
-        expect((await refContract.forgMapping(expUid))[0]).to.equal("testEvent");
+        expect((await refContract.forgMapping(expUid))[1]).to.be.greaterThan(
+          currTime
+        );
       });
     });
   });
