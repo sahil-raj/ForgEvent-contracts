@@ -174,11 +174,17 @@ describe("ForgEvent Tests", () => {
       });
 
       it("must have enough tickets", () => {
-        expect(refContract.buyTickets(expUid, 9999)).to.be.revertedWith("tickets not available");
+        expect(refContract.buyTickets(expUid, 9999)).to.be.revertedWith(
+          "tickets not available"
+        );
       });
 
       it("must send enough value", () => {
-        expect(refContract.buyTickets(expUid, 1, {value: ethers.util.parseEther("0.0")})).to.be.revertedWith("insufficient value");
+        expect(
+          refContract.buyTickets(expUid, 1, {
+            value: ethers.parseEther("0")
+          })
+        ).to.be.revertedWith("insufficient value");
       });
     });
   });
