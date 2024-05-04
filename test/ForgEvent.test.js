@@ -182,10 +182,18 @@ describe("ForgEvent Tests", () => {
       it("must send enough value", () => {
         expect(
           refContract.buyTickets(expUid, 1, {
-            value: ethers.parseEther("0")
+            value: ethers.parseEther("0"),
           })
         ).to.be.revertedWith("insufficient value");
       });
+    });
+
+    it("should update the balances when ticket is bought", async () => {
+        const provider = ethers.getDefaultProvider();
+
+        const b = await provider.getBalance(adds[1].address);
+        refContract.buyTickets(expUid, 99, {value: ethers.parseEther("99999")});
+        expect(b - (await provider.getBalance(adds[1].address))).to.equal(5);
     });
   });
 });
