@@ -1,4 +1,6 @@
 //contracts/ForgEvent.sol
+//sepolia:0xF523972170E57bd0F9576fc2F310D586BC5914c6
+
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 pragma solidity ^0.8.4;
@@ -97,5 +99,3 @@ contract ForgEvent is Initializable, OwnableUpgradeable {
         return success;
     }
 }
-
-//sepolia:0xF523972170E57bd0F9576fc2F310D586BC5914c6
