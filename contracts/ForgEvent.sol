@@ -3,9 +3,9 @@
 
 pragma solidity ^0.8.4;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
-contract ForgEvent is Ownable(msg.sender) {
+contract ForgEvent is Initializable, OwnableUpgradeable {
     constructor() {}
 
     //events
@@ -30,7 +30,12 @@ contract ForgEvent is Ownable(msg.sender) {
     //mapping to map address to the event id and that too to the number of tickets bought
     mapping(address => mapping(bytes32 => uint)) internal userTickets;
 
-    uint256 private nonce = 0;
+    uint256 private nonce;
+
+    function initialize() public initializer {
+        __Ownable_init(msg.sender);
+        nonce = 0;
+    }
 
     //checks for createEvent function
     modifier checkForCreation(string memory _eventName, uint _startTimestamp, uint _endTimestamp, uint _ticketCount) {
@@ -93,4 +98,4 @@ contract ForgEvent is Ownable(msg.sender) {
     }
 }
 
-//[1718083510, 1723353910]
+//sepolia:0xF523972170E57bd0F9576fc2F310D586BC5914c6
