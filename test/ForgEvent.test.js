@@ -13,6 +13,7 @@ describe("ForgEvent Tests", () => {
     ForgEvent = await ethers.getContractFactory("ForgEvent");
     adds = await ethers.getSigners();
     refContract = await ForgEvent.deploy();
+    await refContract.initialize();
   });
 
   describe("Deployment", async () => {
